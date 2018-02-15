@@ -1,0 +1,118 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Mon May 01 00:15:02 2017
+
+@author: Air
+"""
+
+# -*- coding: utf-8 -*-
+"""
+Created on Sat Apr 29 23:14:11 2017
+
+@author: Air
+"""
+
+# -*- coding: utf-8 -*-
+"""
+Created on Sat Apr 29 18:06:31 2017
+
+@author: Air
+"""
+import pandas as pd
+from mpl_toolkits.basemap import Basemap
+import numpy as np
+import matplotlib.pyplot as plt  
+from matplotlib.collections import PolyCollection
+
+
+#============================================# read data  
+GDP=pd.read_csv("GDP_perfect.csv")
+countries=[]
+group=[]
+id=[]
+lat=[]
+long=[]
+economic1992=[]
+economic1993=[]
+#...
+economic2011=[]
+for i in range(161):
+    countries.append(GDP.iat[i,0])
+    group.append(GDP.iat[i,1])
+    id.append(GDP.iat[i,2])
+    lat.append(int(GDP.iat[i,3]))
+    long.append(int(GDP.iat[i,4]))
+    economic1992.append(int(GDP.iat[i,5]))
+    economic1993.append(int(GDP.iat[i,6]))
+    #...
+    economic2011.append(int(GDP.iat[i,24]))
+
+#============================================      
+fig = plt.figure(figsize=(11.7,8.3))
+m = Basemap(projection='mbtfpq',lon_0=0,resolution='c')
+m.drawcoastlines(linewidth=0.1)
+m.drawcountries(linewidth=0.1)
+m.drawmapboundary(fill_color='lightcyan')  
+m.fillcontinents(color='coral',zorder=0)
+m.drawmeridians(np.arange(0,360,10),color='blue')
+m.drawparallels(np.arange(-90,90,10),labels=[1,0,0,0],color='blue')  
+#============================================
+polys = []
+for polygon in m.landpolygons:
+    polys.append(polygon.get_coords())
+lc = PolyCollection(polys[0:1],edgecolor='salmon',facecolor='salmon', closed=False)
+plt.gca().add_collection(lc)
+lc = PolyCollection(polys[1:2],edgecolor='lightpink',facecolor='lightpink', closed=False)
+plt.gca().add_collection(lc)
+
+lc = PolyCollection(polys[2:3], edgecolor='cornflowerblue',facecolor='cornflowerblue', closed=False)
+plt.gca().add_collection(lc)
+
+lc = PolyCollection(polys[3:4], edgecolor='salmon',facecolor='salmon', closed=False)
+plt.gca().add_collection(lc)
+
+lc = PolyCollection(polys[4:5],edgecolor='bisque', facecolor='bisque', closed=False)
+plt.gca().add_collection(lc)
+
+lc = PolyCollection(polys[5:6],edgecolor='palevioletred', facecolor='palevioletred', closed=False)
+plt.gca().add_collection(lc)
+
+
+lc = PolyCollection(polys[6:7],edgecolor='springgreen', facecolor='springgreen', closed=False)
+plt.gca().add_collection(lc)
+
+lc = PolyCollection(polys[7:8], edgecolor='gold', facecolor='gold', closed=False)
+plt.gca().add_collection(lc)
+
+lc = PolyCollection(polys[8:3000], edgecolor='bisque', facecolor='bisque', closed=False)
+plt.gca().add_collection(lc)
+#============================================
+x,y=m(long,lat)
+#============================================  
+y_offset=15
+rotation=-30
+me=160
+size_factor = 2.0
+for i,j,g,c,e in zip(x,y,group,id,economic1992):
+    if g=="[Africa]":
+        size = size_factor*e/me
+        cs=m.scatter(i,j,s=size,marker='o',color='yellow') 
+        plt.text(i,j+y_offset,c,rotation=-rotation,fontsize=8)
+    if g=="[Asia]":
+        size = size_factor*e/me
+        cs=m.scatter(i,j,s=size,marker='o',color='sienna') 
+        plt.text(i,j+y_offset,c,rotation=-rotation,fontsize=8)
+    if g=="[Europe]":
+        size = size_factor*e/me
+        cs=m.scatter(i,j,s=size,marker='o',color='aqua') 
+        plt.text(i,j+y_offset,c,rotation=-rotation,fontsize=8)
+    if g=="[America]":
+        size = size_factor*e/me
+        cs=m.scatter(i,j,s=size,marker='o',color='mediumspringgreen') 
+        plt.text(i,j+y_offset,c,rotation=-rotation,fontsize=8)
+
+#============================================
+plt.title("McBryde-Thomas Flat Polar Quartic Projection")
+plt.show()    
+
+  
